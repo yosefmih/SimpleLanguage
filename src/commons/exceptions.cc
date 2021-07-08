@@ -1,5 +1,5 @@
 #include "exceptions.h"
-#include "common.h"
+#include "defs.h"
 
 string Exception::what() {
     return message;

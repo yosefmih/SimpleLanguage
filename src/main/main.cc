@@ -1,9 +1,9 @@
 #include <iostream>
 #include <cstdint>
 
-#include "../util/common.h"
+#include "../commons/common.h"
 #include "../util/cli.h"
-#include "../util/exceptions.h"
+#include "../commons/exceptions.h"
 
 int main(int argc, char *argv[]) {
     std::cout << "Compiling is fun " << argc << std::endl;

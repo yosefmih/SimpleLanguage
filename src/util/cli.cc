@@ -4,8 +4,9 @@
 #include <cctype>
 #include <algorithm>
 
-#include "common.h"
-#include "exceptions.h"
+#include "../commons/defs.h"
+#include "../commons/exceptions.h"
+#include "../commons/common.h"
 
 // CLI::CLI() {
 //     CLI::outfile = "";

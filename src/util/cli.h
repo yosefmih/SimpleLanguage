@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "common.h"
+#include "../commons/defs.h"
 
 class CLI {
     public:
