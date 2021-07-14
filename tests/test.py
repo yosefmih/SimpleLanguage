@@ -204,7 +204,6 @@ def architecture_check():
 def expected_output(spec):
     with open(spec['match_this']) as fout:
         expected = fout.read() 
-    pretty_print("Expected:\n" + expected, 'info')
 
     if verbose:
         logging.debug('expected:')
@@ -237,7 +236,7 @@ def check_compiler_output(spec, return_code, compiler_output):
             pretty_print(f'WRONG OUTPUT -- {input_file}', 'failure')
             return False 
         else:
-            pretty_print(f'PASSED -- {input_file}')
+            pretty_print(f'PASSED -- {input_file}', 'success')
             return True 
 
     return None 
@@ -261,9 +260,9 @@ def compile(spec):
     if debug_mode:
         cmd += ['--debug']
     
-    cmd += [input_file_path]
+    cmd += [f'--infile={input_file_path}']
     return_code, compiler_output, _ = execute_shell_cmds(
-        cmd, check=False, capture_output=not debug_mode
+        cmd, check=False, capture_output=True
     )
 
     return return_code, compiler_output
@@ -313,7 +312,7 @@ def run_tests(specs):
         
     if num_jobs > 1:
         for i in range(num_jobs):
-            threading.Thread(target=do_tests_from_queue, daemon=true).start() 
+            threading.Thread(target=do_tests_from_queue, daemon=True).start() 
     else:
         do_tests_from_queue()     
     q.join() 
@@ -372,9 +371,9 @@ if __name__ == '__main__':
     num_jobs = args.jobs
 
     # if verbose is set, setup logging 
-    if args.verbose:
+    if args.verbose or debug_mode:
         verbose = True 
-        loggin.basicConfig(level=logging.DEBUG, format='%(message)s')
+        logging.basicConfig(level=logging.DEBUG, format='%(message)s')
     
     if args.dir != None:
         working_dir = os.path.abspath(args.dir)
