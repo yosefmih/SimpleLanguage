@@ -1,6 +1,8 @@
 #ifndef KEYWORDS_H
 #define KEYWORDS_H
 
+#include <vector>
+
 #include "defs.h"
 
 class Keywords {
@@ -19,8 +21,14 @@ class Keywords {
                                    FALSE = "false",
                                    LEN = "len",
                                    RETURN = "return";
-
+                                   
+        static std::vector<string> getVec() {
+            return std::vector<string>({IMPORT, BREAK, CONTINUE, IF, ELSE, FOR, WHILE, INT, BOOL, VOID, TRUE, FALSE, LEN, RETURN});
+        }
 };
 
+// const  std::vector<string> Keywords::keywordsVec = {
+//     IMPORT, BREAK, CONTINUE, IF, ELSE, FOR, WHILE, INT, BOOL, VOID, TRUE, FALSE, LEN, RETURN 
+// };
 
 #endif

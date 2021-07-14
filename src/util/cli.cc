@@ -65,7 +65,7 @@ void CLI::parse(int argc, string args[]) {
         else if (stageStr == "assembly") CLI::stage = ASSEMBLY;
         else {
             printErrorMsg("Invalid stage: " + stageStr);
-            throw IllegalArgumentException("targetStr");
+            throw IllegalArgumentException("Invalid stage: '" + stageStr + "'");
         }
     }
 } 

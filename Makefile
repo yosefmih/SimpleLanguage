@@ -6,7 +6,12 @@ CC = g++ -std=c++17
 #  -Wall : turm on compiler warnings 
 FLAGS = -g -Wall
 
-MAIN_DEPS = ./build/main.o ./build/cli.o ./build/common.o ./build/exceptions.o
+MAIN_DEPS = ./build/main.o ./build/cli.o ./build/common.o ./build/exceptions.o ./build/scanner.o ./build/token.o \
+
+SCANNER_CONSTS = ./src/scanner/scanner.h ./src/commons/keywords.h ./src/commons/defs.h ./src/commons/symbols.h 
+SCANNER_DEPS = ./build/exceptions.o ./build/token.o 
+
+TOKEN_CONSTS = ./src/scanner/token.h ./src/commons/defs.h 
 
 main: $(MAIN_DEPS)
 	$(CC) $(FLAGS) $(MAIN_DEPS) -o main
@@ -22,6 +27,12 @@ main: $(MAIN_DEPS)
 
 ./build/common.o: ./src/commons/common.h ./src/commons/common.cc ./src/commons/defs.h
 	$(CC) $(FLAGS) -c ./src/commons/common.cc -o ./build/common.o
+
+./build/scanner.o: $(SCANNER_CONSTS) ./src/scanner/scanner.cc $(SCANNER_DEPS)
+	$(CC) $(FLAGS) -c ./src/scanner/scanner.cc -o ./build/scanner.o 
+
+./build/token.o: $(TOKEN_CONSTS) ./src/scanner/token.cc ./build/exceptions.o 
+	$(CC) $(FLAGS) -c ./src/scanner/token.cc -o ./build/token.o 
 
 clean:
 	rm ./build/*.o main

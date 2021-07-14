@@ -22,4 +22,9 @@ class IllegalArgumentException : public virtual Exception {
         IllegalArgumentException(string msg): Exception(msg) {};
 };
 
+class ScanningError: public virtual Exception {
+    public:
+        ScanningError(string msg): Exception(msg) {};
+};
+
 #endif

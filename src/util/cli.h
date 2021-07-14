@@ -10,6 +10,8 @@ class CLI {
         CLI() {};
 
         /**
+         * The different stages of the assembly process 
+         * 
          * DEFAULT: default stage
          * SCAN: scan the input and stop
          * PARSE: scan, parse then stop

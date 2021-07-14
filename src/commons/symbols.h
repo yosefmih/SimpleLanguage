@@ -23,7 +23,9 @@ class Symbols {
                                  RBRACKET = ']',
                                  EXCALAMATION = '!',
                                  COMMA = ',',
-                                 SEMICOLON = ';';
+                                 SEMICOLON = ';',
+                                 SINGLE_QUOTES = '\'',
+                                 DOUBLE_QUOTES = '\"';
         
         // compound operators 
         inline const static string PLUS_EQUAL = "+=",

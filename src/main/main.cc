@@ -1,18 +1,22 @@
 #include <iostream>
 #include <cstdint>
+#include <fstream>
 
 #include "../commons/common.h"
 #include "../util/cli.h"
 #include "../commons/exceptions.h"
+#include "../scanner/scanner.h"
+#include "../scanner/token.h"
 
 int main(int argc, char *argv[]) {
-    std::cout << "Compiling is fun " << argc << std::endl;
+    // std::cout << "Compiling is fun " << argc << std::endl;
 
     if (argc < 2) return 0;
 
     string new_argv[argc-1]; 
-    for (uint32_t i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) {
         new_argv[i-1] = argv[i]; 
+        // std::cout << argv[i] << " " << i << std::endl;
     }
 
     CLI cli = CLI();
@@ -20,11 +24,31 @@ int main(int argc, char *argv[]) {
         cli.parse(argc-1, new_argv);
         if (cli.stage == cli.SCAN) {
             // perform scan 
+            // std::cout << "input file " << cli.infile << std::endl;
+            std::ifstream input;
+            input.open(cli.infile, std::ifstream::in);
+
+            Scanner *scanner;
+            
+            if (cli.debug) {
+                scanner = new Scanner(input, std::cerr);
+            } else {
+                scanner = new Scanner(input);
+            }
+
+            Token *token = scanner->getNextToken();
+            while (token->type != Token::FILE_END) {
+                std::cout << token->toString() << std::endl; 
+                token = scanner->getNextToken();
+            }
+            input.clear();
+            input.close();
         } else if (cli.stage == cli.PARSE) {
             // perform parse
         }
-    } catch (IllegalArgumentException &e) {
-        std::cerr << cli.infile << e.what() << std::endl;
+    } catch (Exception &e) {
+        std::cerr << cli.infile << ": " << e.what() << std::endl;
+        return 1;
     }
 
     return 0;
