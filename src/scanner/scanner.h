@@ -79,11 +79,6 @@ class Scanner {
      */
     bool isValidChar(char val) const; 
 
-    /**
-     * Returns a string formatting of the location, row and column, in the file being 
-     * scanned. The format is "[row],[col]"
-     */
-    string getLocationAsStr() const;
 
     /**
      * Parses escape characters. This function should be called after the forward slash ('\')
@@ -145,6 +140,12 @@ class Scanner {
         Scanner(istream &inputStream, ostream &debugStream);
 
         Scanner(istream &inputStream);
+
+        /**
+         * Returns a string formatting of the location, row and column, in the file being 
+         * scanned. The format is "[row],[col]"
+         */
+        string getLocationAsStr() const;
 
         /**
          * Returns a Token instance representing the token read next in the input file 

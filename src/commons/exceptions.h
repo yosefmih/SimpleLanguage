@@ -24,7 +24,12 @@ class IllegalArgumentException : public virtual Exception {
 
 class ScanningError: public virtual Exception {
     public:
-        ScanningError(string msg): Exception(msg) {};
+        ScanningError(string msg) : Exception(msg) {};
+};
+
+class ParsingError: public virtual Exception {
+    public:
+        ParsingError(string msg): Exception(msg) {};
 };
 
 #endif

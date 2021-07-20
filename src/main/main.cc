@@ -7,6 +7,7 @@
 #include "../commons/exceptions.h"
 #include "../scanner/scanner.h"
 #include "../scanner/token.h"
+#include "../parser/parser.h"
 
 int main(int argc, char *argv[]) {
     // std::cout << "Compiling is fun " << argc << std::endl;
@@ -22,12 +23,11 @@ int main(int argc, char *argv[]) {
     CLI cli = CLI();
     try {
         cli.parse(argc-1, new_argv);
+        std::ifstream input;
+        input.open(cli.infile, std::ifstream::in);
         if (cli.stage == cli.SCAN) {
             // perform scan 
             // std::cout << "input file " << cli.infile << std::endl;
-            std::ifstream input;
-            input.open(cli.infile, std::ifstream::in);
-
             Scanner *scanner;
             
             if (cli.debug) {
@@ -43,8 +43,16 @@ int main(int argc, char *argv[]) {
             }
             input.clear();
             input.close();
+            delete scanner;
         } else if (cli.stage == cli.PARSE) {
             // perform parse
+            Parser *parser;
+            if (cli.debug) {
+                parser = new Parser(input, std::cerr);
+            } else {
+                parser = new Parser(input);
+            }
+            parser->program();
         }
     } catch (Exception &e) {
         std::cerr << cli.infile << ": " << e.what() << std::endl;

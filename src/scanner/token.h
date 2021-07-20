@@ -49,6 +49,42 @@ class Token {
         Token(uint32_t row, uint32_t col);
 
         /**
+         * Returns true if the type of this token is equal to the passed
+         * type.
+         */
+        bool checkType(TokenType type);
+
+        /**
+         * Returns true if the value of this token and the passed value are 
+         * equal
+         */
+        bool checkValue(string value);
+
+        /**
+         * Same as isValue(string value) but for chars
+         */
+        bool checkValue(char value);
+
+        /**
+         * Returns true if this token represents a data type in SimpleLanguage
+         * Data types are bool, char and int 
+         */ 
+        bool isDataType();
+
+        // checks to see if t
+        bool isAssignOp(); 
+
+        bool isLiteral();
+
+        bool isBinaryOp();
+
+        bool isIncrementOp();
+
+        bool isMorePrecedent(Token *anotherToken); 
+
+        bool isCompoundAssignOp();
+        
+        /**
          * A string representation of a token instance, with the format 
          * "[type as a string] [value] at [row,col]"
          * 

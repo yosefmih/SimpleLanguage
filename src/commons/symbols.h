@@ -31,7 +31,7 @@ class Symbols {
         inline const static string PLUS_EQUAL = "+=",
                                    MINUS_EQUAL = "-=",
                                    INCREMENT = "++",
-                                   DECREMENt = "--",
+                                   DECREMENT = "--",
                                    OP_GEQ = ">=",
                                    OP_EQ = "==",
                                    OP_NEQ = "!=",

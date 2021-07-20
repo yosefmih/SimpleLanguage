@@ -147,14 +147,14 @@ def prepare_parser_test_specs():
     legal_dir = os.path.join(tests_dir, 'legal')
     illegal_dir = os.path.join(tests_dir, 'illegal')
     pre_specs = [(f, True) for f in sorted(os.listdir(legal_dir))]
-    pre_specs.extend([(f, False) for f in sorted(os.listdir(legal_dir))])
+    pre_specs.extend([(f, False) for f in sorted(os.listdir(illegal_dir))])
     for input_file, legal in pre_specs:
         input_dir = legal_dir if legal else illegal_dir 
         input_file_path = os.path.join(input_dir, input_file) 
 
         spec = {
             'input_file': input_file, 
-            'stage': 'scan',
+            'stage': 'parse',
             'input_file_path': input_file_path 
         }
         if legal:
@@ -264,7 +264,6 @@ def compile(spec):
     return_code, compiler_output, _ = execute_shell_cmds(
         cmd, check=False, capture_output=True
     )
-
     return return_code, compiler_output
 
 
