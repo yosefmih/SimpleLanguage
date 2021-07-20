@@ -172,14 +172,6 @@ class Parser {
         void parseTerm(NonTerminal *term);
 
         /**
-         * Parses a method call or assignment expression. This function looks ahead in the token stream
-         * to decide whether to call parseMethodCall or parseAssignExpr.
-         * 
-         * @param methodCallOrAssignment: root of the method call or assignment tree
-         */
-        void parseMethodCallOrAssignment(NonTerminal *methodCallOrAssignment, Token *nextToken);
-        
-                /**
          * Parses a method call into a subtree with the methodCallNode as a root. 
          * Syntax of a <method_call> is:
          *     <id> ([<expr>]*,);

@@ -282,31 +282,6 @@ void Parser::parseArrayIndex(NonTerminal *location) {
     }
 }
 
-void Parser::parseMethodCallOrAssignment(NonTerminal *methodCallOrStatement, Token *nextToken) {
-    printDebug("Parsing method or statement");
-
-    Token *prevToken = nextToken;
-    nextToken = consumeToken(false);
-    if (nextToken->checkValue(Symbols::LPAREN)) {
-        // this must be a method call
-        methodCallOrStatement->addChild(prevToken);
-        methodCallOrStatement->modifyLabel("method_call");
-        popFromTokens();
-        parseMethodCall(methodCallOrStatement);
-    } else {
-        // otherwise it must be <location> <assign_expr> 
-        methodCallOrStatement->modifyLabel("assign_expr");
-        NonTerminal *location = new NonTerminal("location");
-        location->addChild(prevToken);
-        if (nextToken->checkValue(Symbols::LBRACKET)) {
-            // the location is into an array
-            location->addChild(nextToken);
-            parseArrayIndex(location);
-        }
-        parseAssignExpr(methodCallOrStatement);
-    }
-} 
-
 void Parser::parseAssignExpr(NonTerminal *assignExprNode) {
     printDebug("Parsing an assignment expression");
 
