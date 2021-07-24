@@ -3,20 +3,20 @@
 #include "../commons/common.h"
 
 WhileNode::~WhileNode() {
-    delete expr;
+    delete cond;
     delete block;
 }
 
-ExprNode *WhileNode::getExpr() {
-    return expr;
+ExprNode *WhileNode::getCond() {
+    return cond;
 }
 
 BlockNode *WhileNode::getBlock() {
     return block; 
 }
 
-void WhileNode::setExpr(ExprNode *expr) {
-    this->expr = expr; 
+void WhileNode::setCond(ExprNode *cond) {
+    this->cond = cond; 
 }
 
 void WhileNode::setBlock(BlockNode *block) {
@@ -26,11 +26,11 @@ void WhileNode::setBlock(BlockNode *block) {
 void WhileNode::print(uint32_t depth, std::ostream& printTo) {
     string indentaion = indentationAtDepth(depth);
     printTo << indentaion << "While(" << std::endl;
-    expr->print(depth+1, printTo);
+    cond->print(depth+1, printTo);
     printTo << indentaion << ")" << std::endl;
     block->print(depth+1, printTo); 
 }
 
 WhileNode::operator string() const {
-    return "While(" + string(*expr) + ")" + string(*block);
+    return "While(" + string(*cond) + ")" + string(*block);
 }

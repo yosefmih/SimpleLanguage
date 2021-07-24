@@ -3,25 +3,25 @@
 
 #include <iostream>
 
-#include "astnode.h"
+#include "statementnode.h"
 #include "exprnode.h"
 #include "blocknode.h"
 #include "../commons/defs.h"
 
-class WhileNode : public ASTNode {
-    ExprNode *expr;
+class WhileNode : public StatementNode {
+    ExprNode *cond;
     BlockNode *block;
 
     public:
-        WhileNode(ExprNode *expr, BlockNode *block) : expr(expr), block(block) {}
+        WhileNode(ExprNode *cond, BlockNode *block) : cond(cond), block(block) {}
 
         ~WhileNode();
 
-        ExprNode *getExpr();
+        ExprNode *getCond();
 
         BlockNode *getBlock();
 
-        void setExpr(ExprNode *expr);
+        void setCond(ExprNode *cond);
 
         void setBlock(BlockNode *block);
 
