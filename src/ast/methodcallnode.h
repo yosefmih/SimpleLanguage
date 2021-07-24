@@ -5,10 +5,11 @@
 
 #include "exprnode.h"
 #include "literlanode.h"
+#include "statementnode.h"
 #include "../scanner/token.h"
 #include "../commons/defs.h"
 
-class MethodCallNode : public ExprNode {
+class MethodCallNode : public ExprNode, public StatementNode {
     LitNode *identifier;
     std::vector<ExprNode*> args;
     public:
