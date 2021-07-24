@@ -70,6 +70,10 @@ bool Token::isBinaryOp() {
            checkValue(Symbols::OP_MOD);
 }
 
+bool Token::isUnaryOp() {
+    return checkValue(Symbols::EXCALAMATION) || checkValue(Keywords::LEN);
+}
+
 bool Token::isMorePrecedent(Token *anotherToken) {
     assert (!(isBinaryOp() && anotherToken->isAssignOp()));
     

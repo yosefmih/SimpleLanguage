@@ -78,6 +78,8 @@ class Token {
 
         bool isBinaryOp();
 
+        bool isUnaryOp();
+
         bool isIncrementOp();
 
         bool isMorePrecedent(Token *anotherToken); 
