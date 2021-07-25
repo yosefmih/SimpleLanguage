@@ -55,7 +55,7 @@ void IfElseNode::print(uint32_t depth, std::ostream& printTo) {
     }
 }
 
-IfElseNode::operator string() const {
+IfElseNode::operator string() {
     string str = "If (" + string(*cond) + ")" + string(*block);
     if (elifNode) {
         str += string(*elifNode);

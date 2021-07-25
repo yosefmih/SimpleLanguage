@@ -42,7 +42,7 @@ class ForNode : public StatementNode {
         
         virtual void print(uint32_t depth, std::ostream& printTo);
 
-        virtual operator string() const;
+        virtual operator string();
 };
 
 #endif 

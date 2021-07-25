@@ -39,7 +39,7 @@ void UnaryExprNode::print(uint32_t depth, std::ostream& printTo) {
     printTo << ")" << std::endl;  
 }
 
-UnaryExprNode::operator string() const {
+UnaryExprNode::operator string() {
     string str;
     str += opToken->value + " " + string(*child); 
     return str; 

@@ -1,6 +1,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <vector>
+
 #include "defs.h"
 
 void toLower(string str);
@@ -9,5 +11,9 @@ void toLower(string str);
 string addIndent(string str, uint32_t depth);
 
 string indentationAtDepth(uint32_t depth);
+
+
+template <typename T>
+void deleteVectorMembers(std::vector<T*>& vec); 
 
 #endif

@@ -59,7 +59,7 @@ void AssignNode::print(uint32_t depth, std::ostream& printTo) {
     printTo << std::endl;
 }
 
-AssignNode::operator string() const {
+AssignNode::operator string() {
     string str = string(*location) + " " + assignOp->value + " ";
     if (!expr) {
         str  += string(*expr);

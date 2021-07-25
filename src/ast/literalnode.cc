@@ -21,6 +21,6 @@ void LitNode::print(uint32_t depth, std::ostream& printTo) {
     printTo << indentationAtDepth(depth) << token->value; 
 }
 
-LitNode::operator string() const {
+LitNode::operator string() {
     return "LIT " + token->toString();
 }

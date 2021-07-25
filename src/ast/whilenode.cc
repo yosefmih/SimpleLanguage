@@ -31,6 +31,6 @@ void WhileNode::print(uint32_t depth, std::ostream& printTo) {
     block->print(depth+1, printTo); 
 }
 
-WhileNode::operator string() const {
+WhileNode::operator string() {
     return "While(" + string(*cond) + ")" + string(*block);
 }

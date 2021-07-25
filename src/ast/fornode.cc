@@ -53,6 +53,6 @@ void ForNode::print(uint32_t depth, std::ostream& printTo) {
     block->print(depth+1, printTo);
 }
 
-ForNode::operator string() const {
+ForNode::operator string() {
     return "For(" + string(*initiate) + ";" + string(*cond) + ";" + string(*update) + ")" + string(*block);
 }

@@ -35,7 +35,7 @@ void LocNode::print(uint32_t depth, std::ostream& printTo) {
     }
 }
 
-LocNode::operator string() const {
+LocNode::operator string() {
     string str = string(*identifier);
     if (index) {
         str += "[" + string(*index) + "]";

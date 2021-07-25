@@ -20,8 +20,6 @@ class ExprNode : public ASTNode {
         ExprNode() : type(UNDEFINED){}
 
         ExprNodeType getType();
-
-        virtual void print(uint32_t depth, std::ostream& printTo);
 };
 
 #endif 

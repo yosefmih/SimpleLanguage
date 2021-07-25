@@ -34,3 +34,12 @@ string indentationAtDepth(uint32_t depth) {
     }
     return indentation;
 }
+
+template <typename T>
+void deleteVectorMembers(std::vector<T*>& vec) {
+    auto vecIterator = vec.begin();
+    while (vecIterator != vec.end()) {
+        delete *vecIterator;
+        vecIterator++;
+    }
+}

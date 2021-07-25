@@ -54,7 +54,7 @@ void BinaryExprNode::print(uint32_t depth, std::ostream& printTo) {
     rightChild->print(depth+1, printTo);
 }
 
-BinaryExprNode::operator string() const {
+BinaryExprNode::operator string() {
     string str;
     str += opToken->value + " " + string(*leftChild) + "\n " + string(*rightChild); 
     return str; 

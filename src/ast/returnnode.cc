@@ -24,7 +24,7 @@ void ReturnNode::print(uint32_t depth, std::ostream& printTo) {
     }
 }
 
-ReturnNode::operator string() const {
+ReturnNode::operator string() {
     return "return" + (expr == nullptr)? "" : string(*expr);
 }
 
