@@ -14,6 +14,8 @@ class AssignNode : public ASTNode {
     Token *assignOp;
     ExprNode *expr; 
     public:
+        AssignNode() {};
+        
         AssignNode(LocNode *location, Token *assignOp, ExprNode *expr);
 
         AssignNode(LocNode *location, Token *assignOp);

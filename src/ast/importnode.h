@@ -4,13 +4,15 @@
 #include <iostream>
 
 #include "astnode.h"
-#include "literlanode.h"
+#include "literalnode.h"
 #include "../commons/defs.h"
 
 class ImportNode : public ASTNode {
     LitNode *identifier;
 
     public:
+        ImportNode() {}
+        
         ImportNode(LitNode *identifier) : identifier(identifier) {}
         
         ~ImportNode();

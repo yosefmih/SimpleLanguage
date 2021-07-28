@@ -33,7 +33,7 @@ bool Token::checkValue(string value) {
 
 bool Token::checkValue(char value) {
     // check if a single char value would be equal to the saved value
-    // useful to check for symboles like parentheses 
+    // useful to check for symboles like parentheses  
     string valStr(1, value);
     return checkValue(valStr);
 }

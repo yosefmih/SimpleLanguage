@@ -3,14 +3,17 @@
 
 #include <iostream>
 
+#include "astnode.h"
 #include "statementnode.h"
 #include "exprnode.h"
 #include "../commons/defs.h"
 
-class ReturnNode : public StatementNode {
+class ReturnNode : public StatementNode, public ASTNode {
     ExprNode *expr; 
 
     public:
+        ReturnNode() {};
+        
         ReturnNode(ExprNode *expr) : expr(expr){}
 
         ~ReturnNode();

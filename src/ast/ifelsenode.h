@@ -3,12 +3,13 @@
 
 #include <iostream>
 
+#include "astnode.h"
 #include "statementnode.h"
 #include "exprnode.h"
 #include "blocknode.h"
 #include "../commons/defs.h"
 
-class IfElseNode : public StatementNode {
+class IfElseNode : public StatementNode, public ASTNode {
     ExprNode *cond; 
     BlockNode *block;
     // if the if sequence has an elif, everything after the first if 
@@ -19,6 +20,8 @@ class IfElseNode : public StatementNode {
     BlockNode *elseBlock;
 
     public:
+        IfElseNode() {};
+
         IfElseNode(ExprNode *cond, BlockNode *block, IfElseNode *elifNode) :
             cond(cond),
             block(block),

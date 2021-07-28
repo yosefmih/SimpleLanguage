@@ -9,13 +9,15 @@
 #include "blocknode.h"
 #include "../commons/defs.h"
 
-class ForNode : public StatementNode {
+class ForNode : public StatementNode, public ASTNode {
     AssignNode *initiate;
     ExprNode *cond;
     AssignNode *update;
     BlockNode *block;
 
     public:
+        ForNode() {}
+        
         ForNode(AssignNode *initiate, ExprNode *cond, AssignNode *update, BlockNode *block) :
             initiate(initiate),
             cond(cond),

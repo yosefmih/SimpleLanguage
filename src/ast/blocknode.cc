@@ -2,8 +2,19 @@
 #include "../commons/common.h"
 
 BlockNode::~BlockNode() {
-    deleteVectorMembers(vars);
-    deleteVectorMembers(statements);
+    // deleteVectorMembers(vars.begin(), vars.end());
+    auto varsIterator = vars.begin();
+    while (varsIterator != vars.end()) {
+        delete *varsIterator;
+        varsIterator++;
+    }
+    
+    auto statIterator = statements.begin();
+    while (statIterator != statements.end()) {
+        delete *statIterator;
+        statIterator++;
+    }
+    // deleteVectorMembers(statements.begin(), statements.end());
 }
 
 std::vector<VarDeclNode*>& BlockNode::getVarDecls() {
@@ -32,18 +43,21 @@ void BlockNode::print(uint32_t depth, std::ostream& printTo) {
         varIterator++;
     }
 
+    // printVector(vars.begin(), vars.end(), depth+1, printTo);
+
     auto statementIterator = statements.begin();
     while (statementIterator != statements.end()) {
-        (*statementIterator)->print(depth+1, printTo);
+        ((ASTNode*)*statementIterator)->print(depth+1, printTo);
         statementIterator++;
     } 
+    // printVector(statements.begin(), statements.end(), depth+1, printTo);
 
     printTo << indentation << "}" << std::endl;
 }
 
 BlockNode::operator string() {
     string str = "{\n";
-    str += toString(vars);
+    // str += toString(vars.begin(), vars.end());
 
     auto varIterator = vars.begin();
     while (varIterator != vars.end()) {
@@ -53,7 +67,7 @@ BlockNode::operator string() {
 
     auto statementIterator = statements.begin();
     while (statementIterator != statements.end()) {
-        str += string(**statementIterator);
+        str += string(*(ASTNode*)*statementIterator);
         statementIterator++;
     } 
 

@@ -4,7 +4,7 @@
 #include "astnode.h"
 #include "../scanner/token.h"
 
-class StatementNode : public ASTNode {
+class StatementNode {
     public:
         StatementNode() {};    
 };

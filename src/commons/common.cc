@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include <cstdint> 
+#include <sstream>
 
 void toLower(string str) {
     for (uint32_t i=0; i < str.length(); i++) {
@@ -35,11 +36,18 @@ string indentationAtDepth(uint32_t depth) {
     return indentation;
 }
 
-template <typename T>
-void deleteVectorMembers(std::vector<T*>& vec) {
-    auto vecIterator = vec.begin();
-    while (vecIterator != vec.end()) {
-        delete *vecIterator;
-        vecIterator++;
-    }
+// template <typename T, typename A>
+// void deleteVectorMembers(std::vector<T*, A>& vec) {
+//     auto vecIterator = vec.begin();
+//     while (vecIterator != vec.end()) {
+//         delete *vecIterator;
+//         vecIterator++;
+//     }
+// }
+
+uint32_t stringToInt(string str) {
+    std::stringstream strStream(str);
+    uint32_t res = 0;
+    strStream >> res;
+    return res;
 }

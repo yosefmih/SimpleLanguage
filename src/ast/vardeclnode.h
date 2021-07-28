@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "astnode.h"
-#include "literlanode.h"
+#include "literalnode.h"
 #include "../commons/defs.h"
 #include "../scanner/token.h"
 
@@ -16,6 +16,8 @@ class VarDeclNode : public ASTNode {
     int size;     
     
     public:
+        VarDeclNode() : size(-1) {}
+
         VarDeclNode(LitNode *identifier, Token *typeToken, int size) :
             identifier(identifier),
             typeToken(typeToken),

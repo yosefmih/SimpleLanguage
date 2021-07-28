@@ -4,7 +4,12 @@
 
 MethodCallNode::~MethodCallNode() {
     delete identifier;
-    deleteVectorMembers(args);
+    // deleteVectorMembers(args.begin(), args.end());
+    auto argsIterator = args.begin();
+    while (argsIterator != args.end()) {
+        delete *argsIterator;
+        argsIterator++;
+    }
 }
 
 LitNode *MethodCallNode::getIdentifier() {
@@ -20,18 +25,20 @@ void MethodCallNode::setIdentifier(LitNode *identifier) {
 }
 
 void MethodCallNode::addArg(ExprNode *arg) {
-    args.push_back(arg);
+    // args.push_back(arg);
+    std::cout << args.size() << std::endl;
+    args.push_back(new ExprNode());
 }
 
 void MethodCallNode::print(uint32_t depth, std::ostream& printTo) {
     printTo << indentationAtDepth(depth) << string(*identifier) << "(";
-    ExprNode::printVector(args, depth+1, printTo);
+    // printVector(args.begin(), args.end(), depth+1, printTo);
     printTo <<  indentationAtDepth(depth) + ")";
 }
 
 MethodCallNode::operator string() {
     string str = string(*identifier) + "(\n";
-    str += ExprNode::toString(args);
+    // str += toString(args.begin(), args.end());
     str += ")";
     return str;
 }

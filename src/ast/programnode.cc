@@ -2,9 +2,27 @@
 #include "../commons/common.h"
 
 ProgramNode::~ProgramNode() {
-    deleteVectorMembers(imports);
-    deleteVectorMembers(vars);
-    deleteVectorMembers(methods);
+    // deleteVectorMembers(imports.begin(), imports.end());
+    // deleteVectorMembers(vars.begin(), vars.end());
+    // deleteVectorMembers(methods.begin(), methods.end());
+
+    auto importsIterator = imports.begin();
+    while (importsIterator != imports.end()) {
+        delete *importsIterator;
+        importsIterator++;
+    }
+
+    auto varsIterator = vars.begin();
+    while (varsIterator != vars.end()) {
+        delete *varsIterator;
+        varsIterator++;
+    }
+
+    auto methodsIterator = methods.begin();
+    while (methodsIterator != methods.end()) {
+        delete *methodsIterator;
+        methodsIterator++;
+    }
 }
 
 std::vector<ImportNode*>& ProgramNode::getImports() {
@@ -34,15 +52,33 @@ void ProgramNode::addMethod(MethodDeclNode *method) {
 void ProgramNode::print(uint32_t depth, std::ostream& printTo) {
     string indentation = indentationAtDepth(depth);
     printTo << indentation << "Program" << std::endl;
-    printVector(imports, depth+1, printTo);
-    printVector(vars, depth+1, printTo);
-    printVector(methods, depth+1, printTo);
+
+    auto importsIterator = imports.begin();
+    while (importsIterator != imports.end()) {
+        (*importsIterator)->print(depth+1, printTo);
+        importsIterator++;
+    }
+
+    auto varsIterator = vars.begin();
+    while (varsIterator != vars.end()) {
+        (*varsIterator)->print(depth+1, printTo);
+        varsIterator++;
+    }
+
+    auto methodsIterator = methods.begin();
+    while (methodsIterator != methods.end()) {
+        (*methodsIterator)->print(depth+1, printTo);
+        methodsIterator++;
+    }
+//     printVector(imports.begin(), imports.end(), depth+1, printTo);
+//     printVector(vars.begin(), vars.end(), depth+1, printTo);
+//     printVector(methods.begin(), methods.end(), depth+1, printTo);
 }
 
 ProgramNode::operator string() {
     string str = "Program\n";
-    str += toString(imports);
-    str += toString(vars);
-    str += toString(methods);
+    // str += toString(imports.begin(), imports.end());
+    // str += toString(vars.begin(), vars.end());
+    // str += toString(methods.begin(), methods.end());
     return str;
 }

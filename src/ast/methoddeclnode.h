@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "astnode.h"
-#include "literlanode.h"
+#include "literalnode.h"
 #include "blocknode.h"
 #include "methodargnode.h"
 #include "../commons/defs.h"
@@ -17,6 +17,8 @@ class MethodDeclNode : ASTNode {
     BlockNode *block;
 
     public:
+        MethodDeclNode() {};
+
         MethodDeclNode(Token *returnType, LitNode *identifier) : returnType(returnType), identifier(identifier) {}
 
         ~MethodDeclNode();

@@ -2,7 +2,7 @@
 #define LOCNODE_H
 
 #include "exprnode.h"
-#include "literlanode.h"
+#include "literalnode.h"
 #include "../scanner/token.h"
 #include "../commons/defs.h"
 

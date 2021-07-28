@@ -4,8 +4,11 @@
 MethodDeclNode::~MethodDeclNode() {
     delete returnType;
     delete identifier;
-    deleteVectorMembers(args);
-}
+    auto argsIterator = args.begin();
+    while (argsIterator != args.end()) {
+        delete *argsIterator;
+        argsIterator++;
+    }}
 
 Token *MethodDeclNode::getReturnType() {
     return returnType;

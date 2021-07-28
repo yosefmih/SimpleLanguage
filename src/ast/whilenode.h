@@ -3,16 +3,19 @@
 
 #include <iostream>
 
+#include "astnode.h"
 #include "statementnode.h"
 #include "exprnode.h"
 #include "blocknode.h"
 #include "../commons/defs.h"
 
-class WhileNode : public StatementNode {
+class WhileNode : public StatementNode, public ASTNode {
     ExprNode *cond;
     BlockNode *block;
 
     public:
+        WhileNode() {}
+        
         WhileNode(ExprNode *cond, BlockNode *block) : cond(cond), block(block) {}
 
         ~WhileNode();

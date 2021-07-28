@@ -13,7 +13,9 @@ string addIndent(string str, uint32_t depth);
 string indentationAtDepth(uint32_t depth);
 
 
-template <typename T>
-void deleteVectorMembers(std::vector<T*>& vec); 
+// template <typename T, typename A>
+// void deleteVectorMembers(std::vector<ASTNode*>& vec); 
+
+uint32_t stringToInt(string str); 
 
 #endif

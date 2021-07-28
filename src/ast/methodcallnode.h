@@ -2,9 +2,10 @@
 #define METHOD_CALL_NODE_H
 
 #include <vector>
+#include <iostream>
 
 #include "exprnode.h"
-#include "literlanode.h"
+#include "literalnode.h"
 #include "statementnode.h"
 #include "../scanner/token.h"
 #include "../commons/defs.h"
@@ -13,7 +14,11 @@ class MethodCallNode : public ExprNode, public StatementNode {
     LitNode *identifier;
     std::vector<ExprNode*> args;
     public:
-        MethodCallNode(LitNode *identifier) : identifier(identifier){}
+        MethodCallNode() {}
+
+        MethodCallNode(LitNode *identifier) : identifier(identifier) {}
+        
+        MethodCallNode(const ExprNode &expr) {}
 
         ~MethodCallNode();
 

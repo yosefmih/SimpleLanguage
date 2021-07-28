@@ -7,6 +7,8 @@ class UnaryExprNode : public ExprNode {
     Token *opToken;
     ExprNode *child;
     public:
+        UnaryExprNode() {}
+        
         UnaryExprNode(Token *token, ExprNode *child);
 
         ~UnaryExprNode();

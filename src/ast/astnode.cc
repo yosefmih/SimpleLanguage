@@ -1,22 +1,31 @@
 #include "astnode.h"
 
 template <typename T>
-void ASTNode::printVector(std::vector<T*>& vec, uint32_t depth, std::ostream& printTo) {
-    auto vecIterator = vec.begin();
-    while (vecIterator != vec.end()) {
+void ASTNode::printVector(T begin, T end, uint32_t depth, std::ostream& printTo) {
+    T vecIterator = begin;
+    while (vecIterator != end) {
         (*vecIterator)->print(depth + 1, printTo);
         vecIterator++; 
     }
 }
 
 template <typename T>
-string ASTNode::toString(std::vector<T*>& vec) {
+string ASTNode::toString(T begin, T end) {
     string str;
-    auto vecIterator = vec.begin();
-    while (vecIterator != vec.end()) {
-        str += string(*vecIterator);
-        str += "\n"
+    T vecIterator = begin;
+    while (vecIterator != end) {
+        str += string(**vecIterator);
+        str += "\n";
         vecIterator++;
     }
-    return string;
+    return str;
+}
+
+template <typename T>
+void ASTNode::deleteVectorMembers(T begin, T end) {
+    T vecIterator = begin;
+    while (vecIterator != end) {
+        delete *vecIterator;
+        vecIterator++;
+    }
 }
