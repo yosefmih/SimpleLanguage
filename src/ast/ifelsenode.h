@@ -4,12 +4,11 @@
 #include <iostream>
 
 #include "astnode.h"
-#include "statementnode.h"
 #include "exprnode.h"
 #include "blocknode.h"
 #include "../commons/defs.h"
 
-class IfElseNode : public StatementNode, public ASTNode {
+class IfElseNode : public ASTNode {
     ExprNode *cond; 
     BlockNode *block;
     // if the if sequence has an elif, everything after the first if 

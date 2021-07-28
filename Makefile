@@ -16,7 +16,7 @@ DEFS_H = ./src/commons/defs.h
 TOKEN_CONSTS = ./src/scanner/token.h ./src/commons/defs.h 
 
 AST_HEADERS = ./src/ast/assignnode.h ./src/ast/astnode.h ./src/ast/binaryexprnode.h ./src/ast/blocknode.h ./src/ast/breakcontinuenode.h ./src/ast/exprnode.h ./src/ast/fornode.h ./src/ast/ifelsenode.h \
-			  ./src/ast/importnode.h ./src/ast/lennode.h ./src/ast/literalnode.h ./src/ast/locnode.h ./src/ast/methodargnode.h ./src/ast/methoddeclnode.h ./src/ast/programnode.h ./src/ast/statementnode.h\
+			  ./src/ast/importnode.h ./src/ast/lennode.h ./src/ast/literalnode.h ./src/ast/locnode.h ./src/ast/methodargnode.h ./src/ast/methoddeclnode.h ./src/ast/programnode.h\
 			  ./src/ast/returnnode.h ./src/ast/unaryexprnode.h ./src/ast/vardeclnode.h ./src/ast/whilenode.h
 
 PARSER_CONSTS = ./src/parser/parser.h ./src/parser/parsetree.h $(SCANNER_CONSTS) $(AST_HEADERS)
@@ -89,7 +89,6 @@ PROGRAM_H = ./src/ast/programnode.h
 PROGRAM_C = ./src/ast/programnode.cc 
 RETURN_H = ./src/ast/returnnode.h 
 RETURN_C = ./src/ast/returnnode.cc 
-STATEMENT_H = ./src/ast/statementnode.h 
 UNARY_EXPR_H = ./src/ast/unaryexprnode.h 
 UNARY_EXPR_C = ./src/ast/unaryexprnode.cc 
 VAR_DECL_H = ./src/ast/vardeclnode.h 
@@ -134,7 +133,7 @@ $(AST_O): $(AST_H) $(AST_H) $(DEFS_H) $(TOKEN_O)
 $(BINARY_EXPR_O): $(BINARY_EXPR_H) $(BINARY_EXPR_C) $(DEFS_H) $(TOKEN_O) $(EXPR_O) $(COMMON_O)
 	$(CC) $(FLAGS) -c $(BINARY_EXPR_C) -o $(BINARY_EXPR_O) 
 
-$(BLOCK_O): $(BLOCK_H) $(BLOCK_C) $(DEFS_H) $(VAR_DECL_O) $(STATEMENT_H) $(COMMON_O)
+$(BLOCK_O): $(BLOCK_H) $(BLOCK_C) $(DEFS_H) $(VAR_DECL_O) $(AST_O) $(COMMON_O)
 	$(CC) $(FLAGS) -c $(BLOCK_C) -o $(BLOCK_O)
 
 $(BREAK_CONTINUE_O): $(BREAK_CONTINUE_H) $(BREAK_CONTINUE_C) $(DEFS_H) $(TOKEN_O) $(KEYWORDS_H) 
@@ -143,10 +142,10 @@ $(BREAK_CONTINUE_O): $(BREAK_CONTINUE_H) $(BREAK_CONTINUE_C) $(DEFS_H) $(TOKEN_O
 $(EXPR_O): $(EXPR_H) $(EXPR_C) $(DEFS_H) $(AST_H) $(AST_O) $(TOKEN_O) $(EXCEPTIONS_O) $(COMMON_O)
 	$(CC) $(FLAGS) -c $(EXPR_C) -o $(EXPR_O)
 
-$(FOR_O): $(FOR_H) $(FOR_C) $(DEFS_H) $(STATEMENT_H) $(ASSIGN_O) $(EXPR_O) $(BLOCK_O) $(COMMON_O) 
+$(FOR_O): $(FOR_H) $(FOR_C) $(DEFS_H) $(AST_O) $(ASSIGN_O) $(EXPR_O) $(BLOCK_O) $(COMMON_O) 
 	$(CC) $(FLAGS) -c $(FOR_C) -o $(FOR_O)
 
-$(IF_ELSE_O): $(IF_ELSE_H) $(IF_ELSE_C) $(STATEMENT_H) $(AST_O) $(EXPR_O) $(BLOCK_O) $(DEFS) $(COMMON_O)
+$(IF_ELSE_O): $(IF_ELSE_H) $(IF_ELSE_C) $(AST_O) $(EXPR_O) $(BLOCK_O) $(DEFS) $(COMMON_O)
 	$(CC) $(FLAGS) -c $(IF_ELSE_C) -o $(IF_ELSE_O) 
 
 $(IMPORT_O): $(IMPORT_H) $(IMPORT_C) $(AST_O) $(LITERAL_O) $(DEFS_H) $(COMMON_O) 
@@ -161,7 +160,7 @@ $(LITERAL_O): $(LITERAL_H) $(LITERAL_C) $(AST_O) $(EXPR_O) $(DEFS_H) $(TOKEN_O) 
 $(LOC_O): $(LOC_H) $(LOC_C) $(LITERAL_O) $(EXPR_O) $(TOKEN_O) $(DEFS_H) $(COMMON_O)
 	$(CC) $(FLAGS) -c $(LOC_C) -o $(LOC_O)
 
-$(METHOD_CALL_O): $(METHOD_CALL_H) $(METHOD_CALL_C) $(EXPR_O) $(LITERAL_O) $(STATEMENT_H) $(TOKEN_O) $(DEFS_H) $(COMMON_O)
+$(METHOD_CALL_O): $(METHOD_CALL_H) $(METHOD_CALL_C) $(EXPR_O) $(LITERAL_O) $(AST_O) $(TOKEN_O) $(DEFS_H) $(COMMON_O)
 	$(CC) $(FLAGS) -c $(METHOD_CALL_C) -o $(METHOD_CALL_O)
 
 $(METHOD_DECL_O): $(METHOD_DECL_H) $(METHOD_DECL_C) $(AST_O) $(LITERAL_O) $(BLOCK_O) $(METHOD_ARG_H) $(DEFS_H) $(COMMON_O)
@@ -170,7 +169,7 @@ $(METHOD_DECL_O): $(METHOD_DECL_H) $(METHOD_DECL_C) $(AST_O) $(LITERAL_O) $(BLOC
 $(PROGRAM_O): $(PROGRAM_H) $(PROGRAM_C) $(AST_O) $(IMPORT_O) $(VAR_DECL_O) $(METHOD_DECL_O) $(DEFS_H) $(COMMON_O)
 	$(CC) $(FLAGS) -c $(PROGRAM_C) -o $(PROGRAM_O)
 
-$(RETURN_O): $(RETURN_H) $(RETURN_C) $(AST_O) $(STATEMENT_H) $(EXPR_O) $(DEFS_H) $(COMMON_O)
+$(RETURN_O): $(RETURN_H) $(RETURN_C) $(AST_O) $(EXPR_O) $(DEFS_H) $(COMMON_O)
 	$(CC) $(FLAGS) -c $(RETURN_C) -o $(RETURN_O)
 
 $(UNARY_EXPR_O): $(UNARY_EXPR_H) $(UNARY_EXPR_C) $(EXPR_O) $(DEFS_H) $(COMMON_O)
@@ -179,7 +178,7 @@ $(UNARY_EXPR_O): $(UNARY_EXPR_H) $(UNARY_EXPR_C) $(EXPR_O) $(DEFS_H) $(COMMON_O)
 $(VAR_DECL_O): $(VAR_DECL_H) $(VAR_DECL_C) $(AST_H) $(AST_O) $(LITERAL_H) $(LITERAL_O) $(DEFS_H) $(TOKEN_H) $(TOKEN_O) $(COMMON_H) $(COMMON_O)
 	$(CC) $(FLAGS) -c $(VAR_DECL_C) -o $(VAR_DECL_O)
 
-$(WHILE_O): $(WHILE_H) $(WHILE_C) $(AST_O) $(STATEMENT_H) $(EXPR_O) $(BLOCK_O) $(DEFS_H) $(COMMON_O)
+$(WHILE_O): $(WHILE_H) $(WHILE_C) $(AST_O) $(EXPR_O) $(BLOCK_O) $(DEFS_H) $(COMMON_O)
 	$(CC) $(FLAGS) -c $(WHILE_C) -o $(WHILE_O)
 
 clean:

@@ -21,7 +21,7 @@ std::vector<VarDeclNode*>& BlockNode::getVarDecls() {
     return vars;
 }
 
-std::vector<StatementNode*>& BlockNode::getStatements() {
+std::vector<ASTNode*>& BlockNode::getStatements() {
     return statements;
 }
 
@@ -29,8 +29,8 @@ void BlockNode::addVarDecl(VarDeclNode *var) {
     this->vars.push_back(var);
 }
 
-void BlockNode::addStatement(StatementNode *statement) {
-    this->statements.push_back(statement);
+void BlockNode::addStatement(ASTNode *astNode) {
+    this->statements.push_back(astNode);
 }
 
 void BlockNode::print(uint32_t depth, std::ostream& printTo) {

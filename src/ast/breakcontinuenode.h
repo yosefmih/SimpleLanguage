@@ -3,11 +3,11 @@
 
 #include <iostream>
 
-#include "statementnode.h"
+#include "astnode.h"
 #include "../commons/defs.h"
 #include "../scanner/token.h"
 
-class BreakContinueNode : public StatementNode {
+class BreakContinueNode : public ASTNode {
     Token *token;
 
     public:

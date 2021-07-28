@@ -25,7 +25,6 @@
 #include "../ast/methoddeclnode.h"
 #include "../ast/programnode.h"
 #include "../ast/returnnode.h"
-#include "../ast/statementnode.h"
 #include "../ast/unaryexprnode.h"
 #include "../ast/vardeclnode.h"
 #include "../ast/whilenode.h"
@@ -109,7 +108,7 @@ class Parser {
          *
          * @param location: the node represnting this array location
          */
-        void parseArrayIndex(LocNode *location);
+        LocNode *parseArrayIndex(LitNode *identifier);
 
         /**
          * Parses a block of code. Blocks are contained in between braces ({}). The format of blocks is 
@@ -118,7 +117,7 @@ class Parser {
          * 
          * @param blockNode: root of parsed subtree for the block
          */
-        void parseBlock(BlockNode *blockNode);
+        BlockNode *parseBlock();
 
         /**
          * Parses a for loop code. The for loop subtree is rooted at the passed parameter forNode. 
@@ -128,7 +127,7 @@ class Parser {
          * 
          * @param forNode: the root of the for loop subtree
          */
-        void parseFor(ForNode *forNode);
+        ForNode *parseFor();
 
         /**
          * Parses a while loop code The subtree is rooted at the parameter whileNode. 
@@ -138,7 +137,7 @@ class Parser {
          * 
          * @param whileNode: the root of the while loop subtree
          */
-        void parseWhile(WhileNode *whileNode);
+        WhileNode *parseWhile();
 
         /**
          * Parses an if-elif-else sequence. The subtree is rooted at the passed ifNode. 
@@ -148,7 +147,7 @@ class Parser {
          * 
          * @param ifNode: the node that will be the root of the subtree
          */
-        void parseIfElse(IfElseNode *ifNode);
+        IfElseNode *parseIfElse();
 
         /**
          * Parses a return statement. The subtree is parsed into the returnNode. 
@@ -158,7 +157,7 @@ class Parser {
          * 
          * @param returnNode: a NonTerminal root of the return statement 
          */
-        void parseReturn(ReturnNode *returnNode);
+        ReturnNode *parseReturn();
 
         /**
          * Parses an expr. The subtree parsed is stored in exprNode.
@@ -167,7 +166,7 @@ class Parser {
          *
          * @param exprNode: the root of the subtree representing the expr
          */
-        void parseExpr(ExprNode *exprNode); 
+        ExprNode *parseExpr(); 
 
         /**
          * A function called by parseExpr to assist with binary operation precedence. It recursively compares precedence of the binary ops
@@ -180,15 +179,7 @@ class Parser {
          * @param terms: an ordered vector of terms in the expression 
          * @param ops: an ordered vector of binary operations. Must be one shorter than terms. 
          */
-        void parseExprHelper(ExprNode *expr, std::vector<ExprNode*> terms, std::vector<Token*> ops);
-
-        /**
-         * Parses one term of an expression. A term in an expression is a part of the expression that doesn't contain a
-         * binary operation
-         *
-         * @param term: root of the expression term
-         */
-        void parseTerm(ExprNode *term);
+        ExprNode *parseExprHelper(std::vector<ExprNode*> terms, std::vector<Token*> ops);
 
         /**
          * Parses a method call into a subtree with the methodCallNode as a root. 
@@ -198,7 +189,7 @@ class Parser {
          * 
          * @param methodCallNode: the root of the subtree for the methodCallNode
          */
-        void parseMethodCall(MethodCallNode *MethodCallNode);
+        MethodCallNode *parseMethodCall(LitNode *identifier);
 
         /**
          * Parses an assignment expression into a subtree with root assignExprNode.
@@ -207,7 +198,7 @@ class Parser {
          * 
          * @param assignExprNode: root of the generated subtree for the assignment expression
          */
-        void parseAssignExpr(AssignNode *assignExprNode);
+        AssignNode *parseAssignExpr(LocNode *loc);
 
         /**
          * Returns the next token to be processed. The next token is obtained from toksensQueue if the queue is not empty.

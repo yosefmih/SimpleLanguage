@@ -4,11 +4,10 @@
 #include <iostream>
 
 #include "astnode.h"
-#include "statementnode.h"
 #include "exprnode.h"
 #include "../commons/defs.h"
 
-class ReturnNode : public StatementNode, public ASTNode {
+class ReturnNode : public ASTNode {
     ExprNode *expr; 
 
     public:

@@ -163,16 +163,15 @@ void Parser::parseMethod(MethodDeclNode *method, bool voidMethod) {
         }
     }
 
-    BlockNode *methodBlock = new BlockNode();
-    parseBlock(methodBlock);
+    BlockNode *methodBlock = parseBlock();
     method->setBlock(methodBlock);
 }
 
-void Parser::parseBlock(BlockNode *blockNode) {
+BlockNode *Parser::parseBlock() {
     printDebug("Parsing a block");
 
     uint32_t blockPhase = VAR_DECLRS_PHASE;
-
+    BlockNode *blockNode = new BlockNode();
     Token *nextToken = consumeToken();
     // must start with '{'
     if (!nextToken->checkValue(Symbols::LBRACE)) {
@@ -183,78 +182,60 @@ void Parser::parseBlock(BlockNode *blockNode) {
     while (!nextToken->checkValue(Symbols::RBRACE)) {
         if (nextToken->isDataType()) {
             VarDeclNode *var = new VarDeclNode();
-
             // this has to be a variable declaration
             if (blockPhase != VAR_DECLRS_PHASE) {
                 throw ParsingError("all variable declaration must be at the top of a block");
             }
             var->setType(nextToken);
-
             nextToken = consumeToken();
             if (!nextToken->checkType(Token::IDENTIFIER)) {
                 throw ParsingError("Identifier must come after type in variable declaration");
             }
             var->setIdentifier(new LitNode(nextToken));
-
             parseVars(blockNode, var); 
         } else if (nextToken->checkType(Token::IDENTIFIER)) {
             // either  <location> <assign_expr>; or <method_call>;
             // need to look ahead to determine
             blockPhase = POST_VARS_PHASE;
-
             ASTNode *newNode;
             LitNode *identifier = new LitNode(nextToken);
             nextToken = consumeToken(false);
             if (nextToken->checkValue(Symbols::LPAREN)) {
                 // must be a method call
                 popFromTokens(); // let parseMethodCall get the next token
-                ((MethodCallNode*)newNode)->setIdentifier(identifier);
-                parseMethodCall((MethodCallNode*)newNode);
+                newNode = parseMethodCall(identifier);
             } else {
                 // must be assignment 
-                ((AssignNode*)newNode)->setLocation(new LocNode(identifier));
-                parseAssignExpr((AssignNode*)newNode);
+                newNode = parseAssignExpr(new LocNode(identifier));
             }
-
             nextToken = consumeToken();
             if (!nextToken->checkValue(Symbols::SEMICOLON)) {
                 throw ParsingError("Expected ';' at the end of a statement");
             }
-
-            blockNode->addStatement((StatementNode*)newNode);
+            blockNode->addStatement(newNode);
         } else if (nextToken->checkValue(Keywords::FOR)) {
             // this is a start of a for loop
             blockPhase = POST_VARS_PHASE;
-
-            ForNode *forNode = new ForNode();
-            parseFor(forNode);
+            ForNode *forNode = parseFor();
             blockNode->addStatement(forNode);
         } else if (nextToken->checkValue(Keywords::WHILE)) { 
             // this is a start of a while loop
             blockPhase = POST_VARS_PHASE;
-
-            WhileNode *whileNode = new WhileNode();
-            parseWhile(whileNode);
+            WhileNode *whileNode = parseWhile();
             blockNode->addStatement(whileNode);
         } else if (nextToken->checkValue(Keywords::IF)) {
             // this is a start of an if-else sequence
             blockPhase = POST_VARS_PHASE;
-
-            IfElseNode *ifNode = new IfElseNode();
-            parseIfElse(ifNode);
+            IfElseNode *ifNode = parseIfElse();
             blockNode->addStatement(ifNode);
         } else if (nextToken->checkValue(Keywords::RETURN)) {
             blockPhase = POST_VARS_PHASE;
-
-            ReturnNode *returnNode = new ReturnNode();
-            parseReturn(returnNode);
+            ReturnNode *returnNode = parseReturn();
             blockNode->addStatement(returnNode);
          } else if (nextToken->checkValue(Keywords::CONTINUE) || nextToken->checkValue(Keywords::BREAK)) {
             // these should be processed as needed
             blockPhase = POST_VARS_PHASE;
-
             blockNode->addStatement(new BreakContinueNode(nextToken));
-
             nextToken = consumeToken();
             if (!nextToken->checkValue(Symbols::SEMICOLON)) {
                 throw ParsingError("Expected continue or break lines to end with a semicolon"); 
@@ -267,31 +248,33 @@ void Parser::parseBlock(BlockNode *blockNode) {
     }
 }
 
-void Parser::parseArrayIndex(LocNode *location) {
-    ExprNode *arrayIdxExpr = new ExprNode();
-    parseExpr(arrayIdxExpr);
-    location->setIndex(arrayIdxExpr);
+LocNode *Parser::parseArrayIndex(LitNode *identifier) {
+    LocNode *loc = new LocNode(identifier);
+    ExprNode *arrayIdxExpr = parseExpr();
+    loc->setIndex(arrayIdxExpr);
 
     Token *nextToken = consumeToken();
     if (!nextToken->checkValue(Symbols::RBRACKET)) {
         throw ParsingError("Array locations must end with ']'");
     }
+
+    return loc;
 }
 
-void Parser::parseAssignExpr(AssignNode *assignNode) {
+AssignNode *Parser::parseAssignExpr(LocNode *loc) {
     printDebug("Parsing an assignment expression");
-
+    AssignNode *assignNode = new AssignNode();
     Token *nextToken = consumeToken();
     if (nextToken->checkValue(Symbols::LBRACKET)) {
         // the location is an array
-        parseArrayIndex(assignNode->getLocation());
+        loc = parseArrayIndex(loc->getIdentifier());
         nextToken = consumeToken();
     }
+    assignNode->setLocation(loc);
     
     if (nextToken->isAssignOp()) {
         assignNode->setAssignmentOp(nextToken);
-        ExprNode *expr = new ExprNode();
-        parseExpr(expr);
+        ExprNode *expr = parseExpr();
         assignNode->setExpr(expr);
     } else if (nextToken->isIncrementOp()) {
         assignNode->setAssignmentOp(nextToken);
@@ -300,17 +283,16 @@ void Parser::parseAssignExpr(AssignNode *assignNode) {
     } 
 }
 
-void Parser::parseMethodCall(MethodCallNode *methodCallNode) {
+MethodCallNode *Parser::parseMethodCall(LitNode *identifier) {
     // syntax: <id> ([<expr>]*,)
     // must have parsed <id> into methodCallNode
     printDebug("Parsing a method call");
-
+    MethodCallNode *methodCallNode = new MethodCallNode();
+    ExprNode *expr;
     Token *nextToken = consumeToken(false);
     while (!nextToken->checkValue(Symbols::RPAREN)) {
-        ExprNode *expr = new ExprNode();
-        parseExpr(expr);
+        expr = parseExpr();
         methodCallNode->addArg(expr);
-
         nextToken = consumeToken(false);
         if (nextToken->checkValue(Symbols::COMMA)) {
             popFromTokens();
@@ -322,7 +304,7 @@ void Parser::parseMethodCall(MethodCallNode *methodCallNode) {
     popFromTokens();
 }
 
-void Parser::parseExpr(ExprNode *expr) {
+ExprNode *Parser::parseExpr() {
     printDebug("Parsing an expr");
     std::vector<ExprNode*> terms;
     std::vector<Token*> ops;
@@ -336,15 +318,14 @@ void Parser::parseExpr(ExprNode *expr) {
             nextToken = consumeToken(false);
             if (nextToken->checkValue(Symbols::LPAREN)) {
                 popFromTokens();
-                term = new MethodCallNode(identifier);
                 // ((MethodCallNode*)term)->setIdentifier(identifier);
-                parseMethodCall((MethodCallNode*)term);
+                term = parseMethodCall(identifier);
             } else {
                 term = new LocNode(identifier);
                 if (nextToken->checkValue(Symbols::LBRACKET)) {
                     // array location
                     popFromTokens();
-                    parseArrayIndex((LocNode*)term);
+                    term = parseArrayIndex(identifier);
                 }
             }
         } else if (nextToken->isLiteral() || nextToken->checkType(Token::STRING_LITERAL)) {
@@ -362,7 +343,6 @@ void Parser::parseExpr(ExprNode *expr) {
             }
 
             term = new LenNode(new LitNode(nextToken));
-            // ((LenNode*)term)->setArrayVar(new LitNode(nextToken));
 
             nextToken = consumeToken();
             if (!nextToken->checkValue(Symbols::RPAREN)) {
@@ -371,17 +351,15 @@ void Parser::parseExpr(ExprNode *expr) {
         } else if (nextToken->checkValue(Symbols::OP_MINUS) || nextToken->checkValue(Symbols::EXCALAMATION)) {
             term = new UnaryExprNode();
             ((UnaryExprNode*)term)->setOp(nextToken);
-            ExprNode *child = new ExprNode();
-            parseExpr(child);
+            ExprNode *child = parseExpr();
             ((UnaryExprNode*)term)->setChild(child);
         } else if (nextToken->checkValue(Symbols::LPAREN)) {
             // contrat the tree by parsing ((((expr)))) into just one expr node 
-            parseExpr(term);
+            term = parseExpr();
             nextToken = consumeToken();
             if (!nextToken->checkValue(Symbols::RPAREN)) {
                 throw ParsingError("Expected a matching ')' at the end");
             }
-            return;
         } else {
             throw ParsingError("Unexpected token " + string(*nextToken));
         }
@@ -395,245 +373,161 @@ void Parser::parseExpr(ExprNode *expr) {
             break;
         }
     }
-    parseExprHelper(expr, terms, ops);
-    printDebug("parseExpr returns");
+
+    return parseExprHelper(terms, ops);
 }
 
-void Parser::parseExprHelper(ExprNode *expr, std::vector<ExprNode*> terms, std::vector<Token*> ops) {
-    ExprNode *leftExpr = new ExprNode();
-    ExprNode *rightExpr = new ExprNode();
+ExprNode *Parser::parseExprHelper(std::vector<ExprNode*> terms, std::vector<Token*> ops) {
+    ExprNode *leftExpr;
+    ExprNode *rightExpr;
     if (ops.size() == 0) {
-        *expr = *terms[0];
+        return terms[0];
     } else if (ops.size() == 1) {
-        ((BinaryExprNode*)expr)->setLeftChild(terms[0]);
-        ((BinaryExprNode*)expr)->setOp(ops[0]);
-        ((BinaryExprNode*)expr)->setRightChild(terms[1]);
+        return new BinaryExprNode(ops[0], terms[0], terms[1]);
     } else if (ops[0]->isMorePrecedent(ops[1])) {
-        ((BinaryExprNode*)leftExpr)->setLeftChild(terms[0]);
-        ((BinaryExprNode*)leftExpr)->setOp(ops[0]);
-        ((BinaryExprNode*)leftExpr)->setRightChild(terms[1]);
-        parseExprHelper(rightExpr, std::vector<ExprNode*>(terms.begin()+2, terms.end()), std::vector<Token*>(ops.begin()+2, ops.end()));
-        ((BinaryExprNode*)expr)->setLeftChild(leftExpr);
-        ((BinaryExprNode*)expr)->setOp(ops[0]);
-        ((BinaryExprNode*)expr)->setRightChild(rightExpr);
+        leftExpr = new BinaryExprNode(ops[0], terms[0], terms[1]);
+        rightExpr = parseExprHelper(std::vector<ExprNode*>(terms.begin()+2, terms.end()), std::vector<Token*>(ops.begin()+2, ops.end()));
+        return new BinaryExprNode(ops[1], leftExpr, rightExpr);
     } else {
-        parseExprHelper(rightExpr, std::vector<ExprNode*>(terms.begin()+1, terms.end()), std::vector<Token*>(ops.begin()+1, ops.end()));
-        ((BinaryExprNode*)expr)->setLeftChild(terms[0]);
-        ((BinaryExprNode*)expr)->setOp(ops[0]);
-        ((BinaryExprNode*)expr)->setRightChild(rightExpr);
+        rightExpr = parseExprHelper(std::vector<ExprNode*>(terms.begin()+1, terms.end()), std::vector<Token*>(ops.begin()+1, ops.end()));
+        return new BinaryExprNode(ops[0], terms[0], rightExpr);
     }
 }
 
-void Parser::parseTerm(ExprNode *term) {
-    printDebug("Parsing a term");
 
-    Token *nextToken = consumeToken();
-    if (nextToken->checkType(Token::IDENTIFIER)) {
-        // location or method call
-        LitNode *identifier = new LitNode(nextToken);
-        nextToken = consumeToken(false);
-        if (nextToken->checkValue(Symbols::LPAREN)) {
-            popFromTokens();
-            ((MethodCallNode*)term)->setIdentifier(identifier);
-            parseMethodCall((MethodCallNode*)term);
-        } else {
-            if (nextToken->checkValue(Symbols::LBRACKET)) {
-                // array location
-                popFromTokens();
-                ((LocNode*)term)->setIdentifier(identifier);
-                parseArrayIndex((LocNode*)term);
-            }
-        }
-    } else if (nextToken->isLiteral()) {
-        ((LitNode*)term)->setToken(nextToken);
-    } else if (nextToken->checkValue(Keywords::LEN)) {
-        nextToken = consumeToken();
-        if (!nextToken->checkValue(Symbols::LPAREN)) {
-            throw ParsingError("Len must be followed by (");
-        }
-
-        nextToken = consumeToken();
-        if (!nextToken->checkType(Token::IDENTIFIER)) {
-            throw ParsingError("Expected an identifier after len(");
-        }
-        ((LenNode*)term)->setArrayVar(new LitNode(nextToken));
-
-        nextToken = consumeToken();
-        if (!nextToken->checkValue(Symbols::RPAREN)) {
-            throw ParsingError("Expected a ) after len(<id>"); 
-        }
-    } else if (nextToken->checkValue(Symbols::OP_MINUS) || nextToken->checkValue(Symbols::EXCALAMATION)) {
-        ((UnaryExprNode*)term)->setOp(nextToken);
-        ExprNode *child = new ExprNode();
-        parseExpr(child);
-        ((UnaryExprNode*)term)->setChild(child);
-    } else if (nextToken->checkValue(Symbols::LPAREN)) {
-        // contrat the tree by parsing ((((expr)))) into just one expr node 
-        parseExpr(term);
-        nextToken = consumeToken();
-        if (!nextToken->checkValue(Symbols::RPAREN)) {
-            throw ParsingError("Expected a matching ')' at the end");
-        }
-        return;
-    } else if (nextToken->checkType(Token::STRING_LITERAL)) {
-        ((LitNode*)term)->setToken(nextToken);
-    } else {
-        throw ParsingError("Unexpected token " + string(*nextToken));
-    }
-}
-
-void Parser::parseReturn(ReturnNode *returnNode) {
+ReturnNode *Parser::parseReturn() {
     printDebug("Parsing a return statement");
-
+    ReturnNode *returnNode = new ReturnNode();
     Token *nextToken = consumeToken(false);
     if (!nextToken->checkValue(Symbols::SEMICOLON)) {
         // syntax: return <expr>
-        ExprNode *expr = new ExprNode();
-        // parseExpr will see nextToken as it should be in tokens queue
-        parseExpr(expr); 
+        ExprNode *expr = parseExpr(); 
         returnNode->setExpr(expr);
-
         nextToken = consumeToken();
         if (!nextToken->checkValue(Symbols::SEMICOLON)) {
             throw ParsingError("Expected a semicolon at the end of return");
         }
     }
+    return returnNode;
 }
 
-void Parser::parseFor(ForNode *forNode) {
+ForNode *Parser::parseFor() {
     printDebug("Parsing a for loop");
+    ForNode *forNode = new ForNode();
 
     Token *nextToken = consumeToken();
     if (!nextToken->checkValue(Symbols::LPAREN)) {
         throw ParsingError("Expected '(' after FOR");
-    }
-    
+    } 
     AssignNode *forInitiate = new AssignNode();
     nextToken = consumeToken(); 
     if (!nextToken->checkType(Token::IDENTIFIER)) {
         throw ParsingError("Expected identifier but got " + string(*nextToken));
     }
     forInitiate->setLocation(new LocNode(new LitNode(nextToken)));
-
     nextToken = consumeToken();
     if (!nextToken->checkValue(Symbols::EQUAL)) {
         throw ParsingError("Expected an '=' but got " + string(*nextToken));
     }
     forInitiate->setAssignmentOp(nextToken);
-
-    ExprNode *expr = new ExprNode();
-    parseExpr(expr);
+    ExprNode *expr = parseExpr();
     forInitiate->setExpr(expr);
-    
     forNode->setInitiate(forInitiate);
 
     nextToken = consumeToken();
     if (!nextToken->checkValue(Symbols::SEMICOLON)) {
         throw ParsingError("Expected a ';' but got " + string(*nextToken));
     }
-
-    ExprNode *forCondition = new ExprNode();
-    parseExpr(forCondition);
+    ExprNode *forCondition = parseExpr();
     forNode->setCond(forCondition);
 
     nextToken = consumeToken();
     if (!nextToken->checkValue(Symbols::SEMICOLON)) {
         throw ParsingError("Expected a ';' but got " + string(*nextToken));
     }
-
     AssignNode *forUpdate = new AssignNode();
     nextToken = consumeToken();
     if (!nextToken->checkType(Token::IDENTIFIER)) {
         throw ParsingError("Expected an identifier");
     }
     LocNode *loc = new LocNode(new LitNode(nextToken));
-
     nextToken = consumeToken(false);
     if (nextToken->checkValue(Symbols::LBRACKET)) {
         popFromTokens();
-        parseArrayIndex(loc);
+        loc = parseArrayIndex(loc->getIdentifier());
     }
     forUpdate->setLocation(loc);
-
     nextToken = consumeToken();
     if (nextToken->isCompoundAssignOp()) {
         forUpdate->setAssignmentOp(nextToken);
-        ExprNode *updateExpr = new ExprNode();
-        parseExpr(updateExpr);
+        ExprNode *updateExpr = parseExpr();
         forUpdate->setExpr(updateExpr);
     } else if (nextToken->isIncrementOp()) {
         forUpdate->setAssignmentOp(nextToken);
     } else {
         throw ParsingError("Inappropriate update for For loop");
     }
-
     nextToken = consumeToken();
     if (!nextToken->checkValue(Symbols::RPAREN)) {
         throw ParsingError("Unexpected token " + string(*nextToken));
     }
-
     forNode->setUpdate(forUpdate);
 
-    BlockNode *forBlock = new BlockNode();
-    parseBlock(forBlock);
+    BlockNode *forBlock = parseBlock();
     forNode->setBlock(forBlock);
+    
+    return forNode;
 }
 
-void Parser::parseWhile(WhileNode *whileNode) {
+WhileNode *Parser::parseWhile() {
     printDebug("Parsing a while loop");
-
+    WhileNode *whileNode = new WhileNode();
     Token *nextToken = consumeToken();
     if (!nextToken->checkValue(Symbols::LPAREN)) {
         throw ParsingError("Unexpected token " + string(*nextToken));
     }
-
-    ExprNode *whileCond = new ExprNode();
-    parseExpr(whileCond);
+    ExprNode *whileCond = parseExpr();
     whileNode->setCond(whileCond);
 
     nextToken = consumeToken();
     if(!nextToken->checkValue(Symbols::RPAREN)) {
         throw ParsingError("Unexpected token " + string(*nextToken));
     }
-
-    BlockNode *whileBlock = new BlockNode();
-    parseBlock(whileBlock);
+    BlockNode *whileBlock =  parseBlock();
     whileNode->setBlock(whileBlock);
+
+    return whileNode;
 }
 
-void Parser::parseIfElse(IfElseNode *ifElseNode) {
+IfElseNode *Parser::parseIfElse() {
     printDebug("Parsing an if-elif-else");
-
+    IfElseNode *ifElseNode = new IfElseNode();
     Token *nextToken = consumeToken();
     if (!nextToken->checkValue(Symbols::LPAREN)) {
         throw ParsingError("Unexpected token " + string(*nextToken));
     }
-
-    ExprNode *ifCond = new ExprNode();
-    parseExpr(ifCond);
+    ExprNode *ifCond = parseExpr();
     ifElseNode->setCond(ifCond); 
 
     nextToken = consumeToken();
     if(!nextToken->checkValue(Symbols::RPAREN)) {
         throw ParsingError("Unexpected token " + string(*nextToken));
     }
-
-    BlockNode *ifBlock = new BlockNode();
-    parseBlock(ifBlock);
+    BlockNode *ifBlock = parseBlock();
     ifElseNode->setBlock(ifBlock);
 
     nextToken = consumeToken();
     if (nextToken->checkValue(Keywords::ELIF)) {
-        IfElseNode *elifNode = new IfElseNode();
-        parseIfElse(elifNode);
+        IfElseNode *elifNode = parseIfElse();
         ifElseNode->setElifNode(elifNode);
     } else if (nextToken->checkValue(Keywords::ELSE)) {
-        BlockNode *elseBlock = new BlockNode();
-        parseBlock(elseBlock);
+        BlockNode *elseBlock = parseBlock();
         ifElseNode->setElseBlock(elseBlock);
     } else {
         tokensQueue.push(nextToken);
     }
+
+    return ifElseNode;
 }
 
 Token *Parser::consumeToken(bool deleteToken) {

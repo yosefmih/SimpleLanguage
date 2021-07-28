@@ -15,10 +15,12 @@ class AssignNode : public ASTNode {
     ExprNode *expr; 
     public:
         AssignNode() {};
-        
-        AssignNode(LocNode *location, Token *assignOp, ExprNode *expr);
 
+        AssignNode(LocNode *location) : location(location) {};
+        
         AssignNode(LocNode *location, Token *assignOp);
+
+        AssignNode(LocNode *location, Token *assignOp, ExprNode *expr);
 
         ~AssignNode();
 

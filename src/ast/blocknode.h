@@ -5,14 +5,12 @@
 #include <vector>
 
 #include "astnode.h"
-#include "statementnode.h"
 #include "vardeclnode.h"
 #include "../commons/defs.h"
 
 class BlockNode : public ASTNode {
     std::vector<VarDeclNode*> vars;
-    std::vector<StatementNode*> statements;
-
+    std::vector<ASTNode*> statements;
     public:
         BlockNode(){};
 
@@ -20,11 +18,20 @@ class BlockNode : public ASTNode {
 
         std::vector<VarDeclNode*>& getVarDecls();
 
-        std::vector<StatementNode*>& getStatements();
+        std::vector<ASTNode*>& getStatements();
 
         void addVarDecl(VarDeclNode *var);
 
-        void addStatement(StatementNode *statement);
+        void addStatement(ASTNode *astNode);
+        // void addStatement(ForNode *forNode);
+
+        // void addStatement(BreakContinueNode *BreakContinueNode);
+
+        // void addStatement(WhileNode *whileNode);
+
+        // void addStatement(MethodCallNode *MethodCallNode);
+
+        // void addStatement(ReturnNode *returnNode);
 
         virtual void print(uint32_t depth, std::ostream& printTo);
 

@@ -3,13 +3,13 @@
 
 #include <iostream>
 
-#include "statementnode.h"
+#include "astnode.h"
 #include "exprnode.h"
 #include "assignnode.h"
 #include "blocknode.h"
 #include "../commons/defs.h"
 
-class ForNode : public StatementNode, public ASTNode {
+class ForNode : public ASTNode {
     AssignNode *initiate;
     ExprNode *cond;
     AssignNode *update;

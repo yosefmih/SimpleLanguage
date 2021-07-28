@@ -4,12 +4,11 @@
 #include <iostream>
 
 #include "astnode.h"
-#include "statementnode.h"
 #include "exprnode.h"
 #include "blocknode.h"
 #include "../commons/defs.h"
 
-class WhileNode : public StatementNode, public ASTNode {
+class WhileNode : public ASTNode {
     ExprNode *cond;
     BlockNode *block;
 
