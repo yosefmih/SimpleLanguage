@@ -47,3 +47,21 @@ void SymbolTable::addSymbol(Signature *signature) {
     addSymbol(identifier, signature);
 }
 
+bool SymbolTable::symbolExists(string symbol) {
+    if (table.find(symbol) != table.end()) {
+        return true;
+    } else if (parent != nullptr) {
+        return parent->symbolExists(symbol);
+    }
+    return false;
+}
+
+Signature *SymbolTable::getSignature(string symbol) {
+    auto signIt = table.find(symbol);
+    if (signIt != table.end()) {
+        return signIt->second;
+    } else if (parent) {
+        return parent->getSignature(symbol);
+    }
+    return nullptr;
+}

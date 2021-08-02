@@ -32,6 +32,10 @@ class SymbolTable {
 
         // in this case, the symbol identifier is extracted from signature itself
         void addSymbol(Signature *signature);
+
+        bool symbolExists(string symbol);
+
+        Signature *getSignature(string symbol);
 };
 
 #endif 
