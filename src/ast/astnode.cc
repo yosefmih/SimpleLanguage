@@ -1,4 +1,5 @@
 #include "astnode.h"
+#include "../commons/exceptions.h"
 
 template <typename T>
 void ASTNode::printVector(T begin, T end, uint32_t depth, std::ostream& printTo) {
@@ -28,4 +29,16 @@ void ASTNode::deleteVectorMembers(T begin, T end) {
         delete *vecIterator;
         vecIterator++;
     }
+}
+
+bool checkSemantic() {
+    throw Exception("checkSemantic shouldn't be called on this node");
+}
+
+void ASTNode::buildEnv(SymbolTable *env) {
+    throw Exception("buildEnv shouldn't be called on this node");
+}
+
+SymbolTable *ASTNode::getEnv() {
+    return immediateEnv;
 }

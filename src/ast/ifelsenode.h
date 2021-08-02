@@ -7,6 +7,7 @@
 #include "exprnode.h"
 #include "blocknode.h"
 #include "../commons/defs.h"
+#include "../symbol_table/symbol_table.h"
 
 class IfElseNode : public ASTNode {
     ExprNode *cond; 
@@ -52,6 +53,8 @@ class IfElseNode : public ASTNode {
         virtual void print(uint32_t depth, std::ostream& printTo);
 
         virtual operator string();
+
+        virtual void buildEnv(SymbolTable *env);
 };
 
 #endif 

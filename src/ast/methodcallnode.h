@@ -12,6 +12,7 @@
 class MethodCallNode : public ExprNode {
     LitNode *identifier;
     std::vector<ExprNode*> args;
+    
     public:
         MethodCallNode() {}
 

@@ -2,6 +2,7 @@
 #define UNARYEXPRNODE_H
 
 #include "exprnode.h"
+#include "../symbol_table/symbol_table.h"
 
 class UnaryExprNode : public ExprNode {
     Token *opToken;
@@ -24,6 +25,8 @@ class UnaryExprNode : public ExprNode {
         virtual void print(uint32_t depth, std::ostream& printTo);
 
         virtual operator string();
+
+        virtual void buildEnv(SymbolTable *env);
 };
 
 #endif 

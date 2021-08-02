@@ -9,12 +9,17 @@
 #include "blocknode.h"
 #include "methodargnode.h"
 #include "../commons/defs.h"
+#include "../symbol_table/symbol_table.h"
+#include "../symbol_table/signature.h"
+#include "../symbol_table/methods.h"
 
 class MethodDeclNode : ASTNode {
     Token *returnType;
     LitNode *identifier;
     std::vector<MethodArgNode*> args;
     BlockNode *block;
+    SymbolTable *methodEnv;
+    MethodSignature *signature;
 
     public:
         MethodDeclNode() {};
@@ -42,6 +47,12 @@ class MethodDeclNode : ASTNode {
         virtual void print(uint32_t depth, std::ostream& printTo);
 
         virtual operator string();
+
+        void buildSignature();
+
+        MethodSignature *getSignature();
+
+        virtual void buildEnv(SymbolTable *env);
 };
 
 #endif 

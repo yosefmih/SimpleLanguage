@@ -9,11 +9,13 @@
 #include "vardeclnode.h"
 #include "methoddeclnode.h"
 #include "../commons/defs.h"
+#include "../symbol_table/symbol_table.h"
 
 class ProgramNode : public ASTNode {
     std::vector<ImportNode*> imports;
     std::vector<VarDeclNode*> vars;
     std::vector<MethodDeclNode*> methods;
+    SymbolTable *globalEnv;
 
     public:
         ~ProgramNode();
@@ -33,6 +35,8 @@ class ProgramNode : public ASTNode {
         virtual void print(uint32_t depth, std::ostream& printTo);
 
         virtual operator string();
+
+        virtual void buildEnv(SymbolTable *env);    
 };
 
 #endif

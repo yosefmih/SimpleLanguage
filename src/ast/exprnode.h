@@ -7,6 +7,7 @@
 #include "../commons/defs.h"
 #include "../scanner/token.h"
 #include "../commons/exceptions.h"
+#include "../symbol_table/symbol_table.h"
 
 class ExprNode : public ASTNode {
     public:
@@ -27,6 +28,8 @@ class ExprNode : public ASTNode {
         virtual void print(uint32_t depth, std::ostream& printTo) { throw Exception("Undefined method"); }
 
         virtual operator string() { throw Exception("Undefined method"); }
+
+        virtual void buildEnv(SymbolTable *env);
 };
 
 #endif 

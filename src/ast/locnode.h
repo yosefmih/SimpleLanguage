@@ -10,6 +10,7 @@ class LocNode : public ExprNode {
     LitNode *identifier;
     // index is set in the case that the location is an array
     ExprNode *index; 
+
     public:
         LocNode(LitNode *identifier, ExprNode *index) : identifier(identifier), index(index) {}
 
@@ -28,7 +29,6 @@ class LocNode : public ExprNode {
         virtual void print(uint32_t depth, std::ostream& printTo);
 
         virtual operator string();
-
 };
 
 #endif

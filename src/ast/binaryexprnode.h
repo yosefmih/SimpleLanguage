@@ -4,11 +4,13 @@
 #include "exprnode.h"
 #include "../commons/defs.h"
 #include "../scanner/token.h"
+#include "../symbol_table/symbol_table.h"
 
 class BinaryExprNode : public ExprNode {
     Token *opToken;
     ExprNode *leftChild;
     ExprNode *rightChild;
+    
     public:
         BinaryExprNode(Token *token, ExprNode *leftChild, ExprNode *rightChild); 
 
@@ -29,6 +31,8 @@ class BinaryExprNode : public ExprNode {
         virtual void print(uint32_t depth, std::ostream& printTo);
 
         virtual operator string();
+
+        virtual void buildEnv(SymbolTable *env);
 };
 
 #endif 

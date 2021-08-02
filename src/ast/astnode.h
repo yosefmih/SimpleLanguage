@@ -6,15 +6,22 @@
 
 #include "../commons/defs.h"
 #include "../scanner/token.h"
-// #include "vardeclnode.h"
+#include "../symbol_table/symbol_table.h"
 
 class ASTNode {
+    protected:
+        SymbolTable *immediateEnv;
+
     public:
         virtual void print(uint32_t depth, std::ostream& printTo) = 0;
 
         virtual operator string() = 0;
 
-        // virtual bool checkSemantic() = 0;
+        virtual bool checkSemantic();
+
+        virtual void buildEnv(SymbolTable *env);
+
+        SymbolTable *getEnv();
 
         // using  VecIterator = std::vector<ASTNode*>::iterator;
         template <typename T>

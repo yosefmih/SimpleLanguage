@@ -8,11 +8,13 @@
 #include "exprnode.h"
 #include "../scanner/token.h"
 #include "../commons/defs.h"
+#include "../symbol_table/symbol_table.h"
 
 class AssignNode : public ASTNode {
     LocNode *location;
     Token *assignOp;
     ExprNode *expr; 
+
     public:
         AssignNode() {};
 
@@ -39,6 +41,8 @@ class AssignNode : public ASTNode {
         virtual void print(uint32_t depth, std::ostream& printTo);
 
         virtual operator string();
+
+        virtual void buildEnv(SymbolTable *env);
 };
 
 #endif 

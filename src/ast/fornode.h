@@ -8,6 +8,7 @@
 #include "assignnode.h"
 #include "blocknode.h"
 #include "../commons/defs.h"
+#include "../symbol_table/symbol_table.h"
 
 class ForNode : public ASTNode {
     AssignNode *initiate;
@@ -45,6 +46,8 @@ class ForNode : public ASTNode {
         virtual void print(uint32_t depth, std::ostream& printTo);
 
         virtual operator string();
+
+        void buildEnv(SymbolTable *env);
 };
 
 #endif 

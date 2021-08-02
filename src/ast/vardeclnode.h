@@ -7,13 +7,16 @@
 #include "literalnode.h"
 #include "../commons/defs.h"
 #include "../scanner/token.h"
+#include "../symbol_table/symbol_table.h"
+#include "../symbol_table/variables.h"
 
 class VarDeclNode : public ASTNode {
     Token *typeToken;
     LitNode *identifier;
     // this denotes the size when the variable is an array
     // it should be set to -1 if the variable is not an array 
-    int size;     
+    int size;  
+    VariableSignature *signature;
     
     public:
         VarDeclNode() : size(-1) {}
@@ -47,6 +50,8 @@ class VarDeclNode : public ASTNode {
         virtual void print(uint32_t depth, std::ostream& printTo);
 
         virtual operator string();
+
+        virtual void buildEnv(SymbolTable *env);
 };
 
 #endif 
